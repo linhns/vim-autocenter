@@ -4,20 +4,32 @@ endif
 
 vim9script
 
-if exists('g:autocenter_starting_ratio')
-    g:autocenter_starting_ratio = 2 / 3
-endif
+import autoload '../autoload/options.vim' as opt
 
 def Autocenter()
-    if winline() > winheight(0) * g:autocenter_starting_ratio
-        execute 'normal zz'
+    # Do not autocenter if the window is too small
+    if winheight(0) < 0.5 * &lines
+        return
+    endif
+    # Account for UTF-8
+    var at_end = getcursorcharpos()[2] > len(getline('.'))
+    if winline() > winheight(0) * opt.options.activation_ratio
+        execute 'normal! zz'
+    endif
+
+    if at_end
+        var cursor_pos = getcursorcharpos()
+        cursor_pos[2] += 1
+        setcursorcharpos(cursor_pos[1 : ])
     endif
 enddef
 
 def Setup()
+    opt.SetOptions()
     augroup AutocenterAutocmds
         autocmd!
         autocmd InsertEnter * Autocenter()
+        autocmd TextChangedI * Autocenter()
     augroup end
 enddef
 
@@ -32,12 +44,9 @@ def Reset()
     Setup()
 enddef
 
-if !exists(":AutocenterDisable")
-    command! -nargs=0 AutocenterDisable call Teardown()
-endif
+command! -nargs=0 AutocenterDisable call Teardown()
 
-if !exists(":AutocenterEnable")
-    command! -nargs=0 AutocenterEnable call Setup()
-endif
+command! -nargs=0 AutocenterEnable call Setup()
 
 Reset()
+
