@@ -2,9 +2,11 @@ if !has('vim9script') || v:version < 900
     finish
 endif
 
-vim9script
+vim9script noclear
 
 import autoload '../autoload/options.vim' as opt
+
+opt.SetOptions()
 
 def Autocenter()
     # Do not autocenter if the window is too small
@@ -24,6 +26,11 @@ def Autocenter()
     endif
 enddef
 
+if exists("g:loaded_autocenter")
+    finish
+endif
+g:loaded_autocenter = 1
+
 def Setup()
     opt.SetOptions()
     augroup AutocenterAutocmds
@@ -39,14 +46,8 @@ def Teardown()
     augroup end
 enddef
 
-def Reset()
-    Teardown()
-    Setup()
-enddef
-
 command! -nargs=0 AutocenterDisable call Teardown()
 
 command! -nargs=0 AutocenterEnable call Setup()
 
-Reset()
-
+Setup()
