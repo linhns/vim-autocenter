@@ -1,0 +1,52 @@
+*autocenter.txt*    Minimalist plugin to automatically center cursor
+
+=============================================================================
+INTRODUCTION                                                      *autocenter*
+
+This plugin helps those inclined to exit from |Insert| mode just to press |zz|.
+
+=============================================================================
+
+USAGE                                                       *autocenter-usage*
+
+After installation, this plugin is enabled by default.
+
+This plugin tries to be smart to not trigger when window is too small (i.e
+users intend to use the full height of the screen).
+
+=============================================================================
+
+COMMANDS                                                 *autocenter-commands*
+
+:AutocenterEnable                                           *AutocenterEnable*
+    Enable auto-centering when enter insert mode and on changes
+
+:AutocenterDisable                                         *AutocenterDisable*
+    Disable auto-centering
+
+=============================================================================
+
+CONFIGURATION                                      *autocenter-configurations*
+
+g:autocenter_options                                    *g:autocenter_options*
+
+Use this dictionary to specify how autocenter behaves.
+
+Example:
+>
+    let g:autocenter_options =
+        \ {
+        \  'activation_ratio': 0.5
+        \ }
+<
+
+g:autocenter_options['activation_ratio']
+                                       *g:autocenter_options.activation_ratio*
+
+Sets the point when |zz| is called. This is the ratio of the current window
+line and window height.
+
+By default, it is set to 0.5 for a typewriter like experience.
+Unless you have specific needs, it is not advised to change this value.
+
+vim:tw=78:et:ft=help:norl:
